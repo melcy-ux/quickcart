@@ -116,12 +116,6 @@ quickcart/
 
 ---
 
-## Screenshots
-
-> Screenshots to be added after running the project locally.
-
----
-
 ## License
 
 This project was created for educational purposes as part of BIT3208.
