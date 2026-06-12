@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BIT3208 Practical Logbook — QuickCart</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: "Times New Roman", Times, serif;
+      font-size: 12pt;
+      line-height: 1.6;
+      color: #000;
+      background: #d0d0d0;
+    }
+
+    .page {
+      width: 210mm;
+      min-height: 297mm;
+      margin: 18px auto;
+      padding: 22mm 22mm 22mm 28mm;
+      background: #fff;
+      box-shadow: 0 3px 10px rgba(0,0,0,0.35);
+    }
+
+    /* ── Cover ─────────────────────────────────── */
+    .cover-wrap {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      min-height: 247mm;
+    }
+    .uni-header {
+      text-align: center;
+      border-bottom: 2px solid #000;
+      padding-bottom: 12px;
+      margin-bottom: 18px;
+    }
+    .uni-header h1 { font-size: 15pt; font-weight: bold; text-transform: uppercase; letter-spacing: 0.5px; }
+    .uni-header p  { font-size: 11pt; margin-top: 3px; }
+    .title-box { border: 2px solid #000; padding: 18px 20px; text-align: center; margin: 18px 0; }
+    .title-box h2 { font-size: 14pt; font-weight: bold; text-transform: uppercase; letter-spacing: 0.4px; }
+    .title-box h3 { font-size: 12pt; font-weight: normal; margin-top: 6px; }
+    .project-label { text-align: center; margin: 16px 0 22px; }
+    .project-label p:first-child { font-size: 13pt; font-weight: bold; }
+    .project-label p:last-child  { font-size: 11pt; margin-top: 5px; }
+    .details-table { width: 100%; border-collapse: collapse; }
+    .details-table td { padding: 7px 5px; border-bottom: 1px solid #bbb; font-size: 11pt; vertical-align: top; }
+    .details-table td:first-child { font-weight: bold; width: 38%; }
+    .cover-footer { text-align: center; font-size: 10pt; color: #444; margin-top: 20px; border-top: 1px solid #bbb; padding-top: 8px; }
+
+    /* ── Week pages ─────────────────────────────── */
+    .week-banner {
+      font-size: 13pt; font-weight: bold; text-transform: uppercase;
+      text-align: center; background: #1a1a2e; color: #fff;
+      padding: 9px 12px; margin-bottom: 16px; letter-spacing: 0.5px;
+    }
+    .meta-table, .tasks-table {
+      width: 100%; border-collapse: collapse; margin-bottom: 14px; font-size: 10.5pt;
+    }
+    .meta-table th, .tasks-table th {
+      background: #2c2c54; color: #fff; padding: 6px 8px; text-align: left; border: 1px solid #555;
+    }
+    .meta-table td, .tasks-table td { padding: 5px 8px; border: 1px solid #bbb; vertical-align: top; }
+    .tasks-table tr:nth-child(even) td { background: #f5f5f5; }
+
+    /* ── Figures ────────────────────────────────── */
+    .figs-heading {
+      font-size: 11pt; font-weight: bold; text-transform: uppercase;
+      margin: 14px 0 10px; letter-spacing: 0.3px;
+      border-bottom: 1px solid #999; padding-bottom: 3px;
+    }
+    .fig-row { display: flex; gap: 14px; margin-bottom: 14px; }
+    .fig-row.single { justify-content: center; }
+    .fig-row.single .fig-box { width: 68%; }
+    .fig-box { flex: 1; display: flex; flex-direction: column; }
+
+    /* Real screenshot images */
+    .fig-img {
+      width: 100%;
+      height: 52mm;
+      object-fit: contain;
+      border: 1px solid #ccc;
+      background: #f8f8f8;
+      display: block;
+    }
+
+    /* Week 2 hand-draw templates */
+    .wireframe {
+      border: 2px dashed #555;
+      background: #fffef8;
+      font-family: "Courier New", monospace;
+      font-size: 7pt;
+      height: 52mm;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      color: #222;
+    }
+    .wf-label {
+      background: #333; color: #fff; font-size: 6.5pt;
+      text-align: center; padding: 1px 4px; letter-spacing: 0.5px;
+    }
+    .wf-body { flex: 1; display: flex; flex-direction: column; padding: 4px; gap: 3px; overflow: hidden; }
+    .wf-nav {
+      border: 1px solid #333; background: #dde; padding: 2px 5px;
+      display: flex; justify-content: space-between; align-items: center;
+      font-weight: bold; font-size: 7pt; flex-shrink: 0;
+    }
+    .wf-hero {
+      border: 1px solid #333; background: #c5d9f5; text-align: center;
+      padding: 4px 2px; flex-shrink: 0;
+    }
+    .wf-hero-btn {
+      border: 1px solid #333; background: #fff; display: inline-block;
+      padding: 1px 6px; margin-top: 2px; font-size: 6.5pt;
+    }
+    .wf-section-label { font-weight: bold; font-size: 7pt; flex-shrink: 0; }
+    .wf-grid { display: flex; gap: 3px; flex: 1; min-height: 0; }
+    .wf-card {
+      border: 1px solid #333; flex: 1; padding: 2px;
+      display: flex; flex-direction: column; align-items: center; font-size: 6pt;
+    }
+    .wf-img { background: #ccc; width: 100%; height: 14px; display: flex; align-items: center; justify-content: center; font-size: 5.5pt; color: #555; margin-bottom: 2px; }
+    .wf-btn-blue { background: #0d6efd; color: #fff; text-align: center; padding: 1px 3px; width: 100%; margin-top: auto; font-size: 6pt; }
+    .wf-stats { display: flex; gap: 3px; flex-shrink: 0; }
+    .wf-stat { border: 1px solid #333; flex: 1; text-align: center; padding: 3px 2px; }
+    .wf-stat-num { font-size: 11pt; font-weight: bold; color: #0d6efd; line-height: 1; }
+    .wf-stat-lbl { font-size: 5.5pt; color: #555; }
+    .wf-table { border-collapse: collapse; width: 100%; font-size: 6pt; }
+    .wf-table th { background: #333; color: #fff; padding: 1px 3px; }
+    .wf-table td { border: 1px solid #ccc; padding: 1px 3px; }
+    .wf-phone { border: 2px solid #333; border-radius: 6px; width: 55%; margin: 0 auto; flex: 1; display: flex; flex-direction: column; overflow: hidden; min-height: 0; }
+    .wf-phone-bar { background: #333; color: #fff; font-size: 6pt; text-align: center; padding: 1px; }
+    .wf-phone-body { flex: 1; padding: 2px; display: flex; flex-direction: column; gap: 2px; overflow: hidden; }
+    .wf-phone-card { border: 1px solid #bbb; padding: 2px; font-size: 5.5pt; }
+    .wf-phone-img { background: #ddd; height: 12px; margin-bottom: 1px; }
+    .wf-color-row { display: flex; gap: 4px; flex-shrink: 0; }
+    .wf-swatch { height: 16px; flex: 1; border: 1px solid #666; display: flex; align-items: center; justify-content: center; font-size: 5.5pt; }
+    .wf-nav-tree { flex: 1; padding: 2px 0; font-size: 6.5pt; line-height: 1.8; }
+    .wf-form { border: 1px solid #333; padding: 4px; flex: 1; display: flex; flex-direction: column; gap: 3px; }
+    .wf-input { border: 1px solid #999; background: #fff; height: 10px; width: 100%; }
+    .wf-submit { background: #0d6efd; color: #fff; text-align: center; padding: 2px; font-size: 6.5pt; }
+    .wf-footer { border: 1px solid #333; background: #333; color: #fff; text-align: center; padding: 2px; flex-shrink: 0; font-size: 6pt; }
+
+    /* Placeholder (fallback if image missing) */
+    .placeholder {
+      border: 2px dashed #888; background: #f7f7f7; height: 52mm;
+      display: flex; flex-direction: column; align-items: center;
+      justify-content: center; color: #666; font-size: 9.5pt;
+      font-style: italic; text-align: center; padding: 8px; gap: 6px;
+    }
+
+    .fig-caption { font-size: 9.5pt; text-align: center; margin-top: 5px; line-height: 1.4; padding: 0 2px; }
+
+    /* ── Reflection ─────────────────────────────── */
+    .reflect-heading {
+      font-size: 11pt; font-weight: bold; text-transform: uppercase;
+      letter-spacing: 0.3px; margin-top: 14px; margin-bottom: 7px;
+      border-bottom: 1px solid #999; padding-bottom: 3px;
+    }
+    .reflect-text { font-size: 11pt; text-align: justify; line-height: 1.75; }
+
+    code { font-family: "Courier New", Courier, monospace; font-size: 10pt; background: #f0f0f0; padding: 0 2px; }
+
+    @media print {
+      body { background: #fff; }
+      .page { margin: 0; box-shadow: none; page-break-after: always; }
+    }
+    @page { size: A4; margin: 0; }
+  </style>
+</head>
+<body>
+
+<!-- ═══════════════════ COVER PAGE ═══════════════════ -->
+<div class="page">
+  <div class="cover-wrap">
+    <div>
+      <div class="uni-header">
+        <h1>[UNIVERSITY / INSTITUTION NAME]</h1>
+        <p>School of Computing and Informatics</p>
+        <p>Department of Information Technology</p>
+      </div>
+      <div class="title-box">
+        <h2>BIT 3208 &mdash; Advanced Web Design and Development</h2>
+        <h3>Practical Logbook &mdash; Weeks 1 to 5</h3>
+        <p style="font-size:10.5pt; margin-top:8px; color:#444;">Semester 2, 2025/2026</p>
+      </div>
+      <div class="project-label">
+        <p>QuickCart &mdash; Online Shopping System</p>
+        <p>A PHP + MySQL E-Commerce Web Application</p>
+      </div>
+    </div>
+    <div>
+      <table class="details-table">
+        <tr><td>Student Name:</td><td>Melcy Kate</td></tr>
+        <tr><td>Admission Number:</td><td>BSCCS/2024/53326</td></tr>
+        <tr><td>Programme / Course:</td><td>BSc Computer Science</td></tr>
+        <tr><td>Unit Code:</td><td>BIT 3208</td></tr>
+        <tr><td>Unit Name:</td><td>Advanced Web Design and Development</td></tr>
+        <tr><td>Lecturer:</td><td>Mr Nyoro</td></tr>
+        <tr><td>Submission Date:</td><td>6th June 2026</td></tr>
+        <tr><td>GitHub Repository:</td><td>https://github.com/melcy-ux/quickcart</td></tr>
+        <tr><td>Technology Stack:</td><td>PHP 8.x, MySQL 8.x, XAMPP, HTML5, CSS3, JavaScript, Bootstrap 5</td></tr>
+      </table>
+    </div>
+    <div class="cover-footer">Practical Activities and Reflections &mdash; Weeks 1 through 5</div>
+  </div>
+</div>
+
+
+<!-- ═══════════════════ WEEK 1 ═══════════════════ -->
+<div class="page">
+  <div class="week-banner">Week 1 &mdash; Installation and Testing of the Local Development Environment</div>
+
+  <table class="meta-table">
+    <tr><th>Week</th><th>Course Topic</th><th>Date of Activities</th></tr>
+    <tr><td>1</td><td>Networking Fundamentals &mdash; Local Server Setup</td><td>5th May 2026</td></tr>
+  </table>
+
+  <table class="tasks-table">
+    <tr><th>#</th><th>Task Performed</th><th>Description</th><th>Status</th></tr>
+    <tr><td>1</td><td>Install XAMPP</td><td>Downloaded and installed XAMPP v8.2 on Windows; confirmed Apache, MySQL, and PHP components were included</td><td>Done</td></tr>
+    <tr><td>2</td><td>Start Services</td><td>Launched Apache and MySQL from XAMPP Control Panel; resolved a port 80 conflict by changing Apache to port 8080 in <code>httpd.conf</code></td><td>Done</td></tr>
+    <tr><td>3</td><td>Test Localhost</td><td>Opened a browser and visited http://localhost:8080 &mdash; confirmed the XAMPP welcome dashboard loaded correctly</td><td>Done</td></tr>
+    <tr><td>4</td><td>First PHP Page</td><td>Created a <code>quickcart</code> folder inside <code>htdocs</code> and wrote an <code>index.php</code> file with a simple <code>echo</code> statement; verified it rendered in the browser</td><td>Done</td></tr>
+    <tr><td>5</td><td>Database Connection</td><td>Created <code>quickcart_db</code> in phpMyAdmin; wrote <code>includes/db.php</code> using <code>mysqli_connect()</code> and confirmed the connection was successful</td><td>Done</td></tr>
+  </table>
+
+  <p class="figs-heading">Figures</p>
+
+  <div class="fig-row">
+    <div class="fig-box">
+      <img src="assets/images/w1_fig1.png" class="fig-img" alt="XAMPP Control Panel">
+      <p class="fig-caption"><strong>Figure 1:</strong> XAMPP Control Panel with Apache running on port 8080 and MySQL running on port 3306 &mdash; both modules showing a green running status.</p>
+    </div>
+    <div class="fig-box">
+      <img src="assets/images/w1_fig2.png" class="fig-img" alt="XAMPP welcome dashboard">
+      <p class="fig-caption"><strong>Figure 2:</strong> Browser displaying the XAMPP dashboard at http://localhost:8080, confirming Apache is serving pages correctly from the <code>htdocs</code> directory.</p>
+    </div>
+  </div>
+
+  <div class="fig-row">
+    <div class="fig-box">
+      <img src="assets/images/w1_fig3.png" class="fig-img" alt="QuickCart homepage">
+      <p class="fig-caption"><strong>Figure 3:</strong> Browser rendering the QuickCart homepage at http://localhost/quickcart/ with featured products loading from the database, confirming PHP is processing correctly.</p>
+    </div>
+    <div class="fig-box">
+      <img src="assets/images/w1_fig4.png" class="fig-img" alt="phpMyAdmin showing quickcart_db">
+      <p class="fig-caption"><strong>Figure 4:</strong> phpMyAdmin interface showing the <code>quickcart_db</code> database created in the left sidebar, confirming the MySQL database layer is ready for the project.</p>
+    </div>
+  </div>
+
+  <div class="fig-row single">
+    <div class="fig-box">
+      <img src="assets/images/w1_fig5.png" class="fig-img" alt="db.php connection script">
+      <p class="fig-caption"><strong>Figure 5:</strong> The <code>db.php</code> connection file showing the <code>mysqli_connect()</code> call with database credentials, confirming the PHP-to-MySQL connection is configured correctly.</p>
+    </div>
+  </div>
+
+  <p class="reflect-heading">Reflection</p>
+  <p class="reflect-text">
+    Setting up XAMPP went fairly smoothly overall, but I ran into one issue early on — port 80 was already occupied by another process on my machine, which stopped Apache from starting. After looking it up, I edited the <em>httpd.conf</em> file and changed the listening port to 8080, which fixed it straight away. Creating my first PHP file felt different from anything I had done in HTML and CSS; understanding that the server processes the script before the output reaches the browser was a key shift in how I thought about things. Connecting to <code>quickcart_db</code> using <code>mysqli_connect()</code> actually worked on the first attempt, which was a good way to start the project.
+  </p>
+</div>
+
+
+<!-- ═══════════════════ WEEK 2 ═══════════════════ -->
+<div class="page">
+  <div class="week-banner">Week 2 &mdash; User Interface Planning and System Design</div>
+
+  <table class="meta-table">
+    <tr><th>Week</th><th>Course Topic</th><th>Date of Activities</th></tr>
+    <tr><td>2</td><td>Client-side Components &mdash; Wireframes and GUI Design</td><td>12th May 2026</td></tr>
+  </table>
+
+  <table class="tasks-table">
+    <tr><th>#</th><th>Task Performed</th><th>Description</th><th>Status</th></tr>
+    <tr><td>1</td><td>Homepage Wireframe</td><td>Drew a hand-sketched wireframe of the QuickCart homepage with a navigation bar, hero section, and a three-column product grid</td><td>Done</td></tr>
+    <tr><td>2</td><td>Admin Dashboard Sketch</td><td>Designed the admin panel layout on paper showing stat cards for total products and orders, plus quick navigation to management sections</td><td>Done</td></tr>
+    <tr><td>3</td><td>Mobile View Mockup</td><td>Sketched a mobile-first product listing layout showing how product cards stack to a single column on smaller screens</td><td>Done</td></tr>
+    <tr><td>4</td><td>Color Scheme and Navigation</td><td>Decided on blue (#0d6efd) and white as the main color theme; finalized a top navigation bar with a cart icon and login link</td><td>Done</td></tr>
+    <tr><td>5</td><td>Digital Prototype</td><td>Recreated the homepage and login page wireframes as a digital prototype, showing annotated page flow and component placement</td><td>Done</td></tr>
+  </table>
+
+  <p class="figs-heading">Figures</p>
+
+  <div class="fig-row">
+    <div class="fig-box">
+      <img src="assets/images/w2_fig1.png" class="fig-img" alt="Homepage wireframe sketch">
+      <p class="fig-caption"><strong>Figure 1:</strong> Hand-drawn wireframe of the QuickCart homepage showing the navigation bar, hero banner, and three-column product grid layout.</p>
+    </div>
+
+    <div class="fig-box">
+      <img src="assets/images/w2_fig2.png" class="fig-img" alt="Admin dashboard sketch">
+      <p class="fig-caption"><strong>Figure 2:</strong> Sketch of the admin dashboard with stat cards for product count and order count, recent orders table, and quick navigation links.</p>
+    </div>
+  </div>
+
+  <div class="fig-row">
+    <div class="fig-box">
+      <img src="assets/images/w2_fig3.png" class="fig-img" alt="Mobile product listing mockup">
+      <p class="fig-caption"><strong>Figure 3:</strong> Mobile-oriented wireframe showing the product listing page with a single-column stacked card layout for small screen sizes.</p>
+    </div>
+
+    <div class="fig-box">
+      <img src="assets/images/w2_fig4.png" class="fig-img" alt="Color scheme and navigation structure">
+      <p class="fig-caption"><strong>Figure 4:</strong> Color palette showing the blue and white theme with hex codes, alongside the planned top navigation bar structure with role-based links.</p>
+    </div>
+  </div>
+
+  <div class="fig-row single">
+    <div class="fig-box">
+      <img src="assets/images/w2_fig5.png" class="fig-img" alt="Login page prototype">
+      <p class="fig-caption"><strong>Figure 5:</strong> Prototype of the QuickCart login page showing the form layout alongside the authentication flow from form submission through PHP session creation.</p>
+    </div>
+  </div>
+
+  <p class="reflect-heading">Reflection</p>
+  <p class="reflect-text">
+    I spent most of this week on sketches before writing any code, which felt slow at first but turned out to be the right approach. Planning where the product grid, the search bar, and the navigation links would go made the HTML work that came later much more straightforward. Choosing a color scheme took more time than I expected — I first tried a green theme but it felt too generic for a shopping site. I settled on blue and white because it felt more professional and consistent with how well-known e-commerce platforms tend to look. Moving the paper sketches into a digital prototype was where most of the time went, mostly due to trying to get the spacing and alignment looking clean.
+  </p>
+</div>
+
+
+<!-- ═══════════════════ WEEK 3 ═══════════════════ -->
+<div class="page">
+  <div class="week-banner">Week 3 &mdash; Frontend Interaction and Backend Foundations</div>
+
+  <table class="meta-table">
+    <tr><th>Week</th><th>Course Topic</th><th>Date of Activities</th></tr>
+    <tr><td>3</td><td>JavaScript Basics and Introduction to PHP</td><td>19th May 2026</td></tr>
+  </table>
+
+  <table class="tasks-table">
+    <tr><th>#</th><th>Task Performed</th><th>Description</th><th>Status</th></tr>
+    <tr><td>1</td><td>JS Form Validation</td><td>Wrote JavaScript to validate the QuickCart login form &mdash; checks for empty email and password fields, displays inline error messages without submitting the form</td><td>Done</td></tr>
+    <tr><td>2</td><td>Password Strength Checker</td><td>Built a live password strength indicator on the registration form using regex to check minimum length, presence of a number, and a special character</td><td>Done</td></tr>
+    <tr><td>3</td><td>PHP Syntax Practice</td><td>Wrote and tested a standalone PHP script practising variables, conditional statements, for loops, and functions with parameters</td><td>Done</td></tr>
+    <tr><td>4</td><td>Database Connection Script</td><td>Completed <code>includes/db.php</code> with <code>mysqli_connect()</code>, error handling using <code>die()</code>, and tested against the live <code>quickcart_db</code> database</td><td>Done</td></tr>
+    <tr><td>5</td><td>Dynamic Product Display</td><td>Used <code>mysqli_query()</code> and a <code>while</code> loop in <code>products.php</code> to fetch product records and render them as Bootstrap cards in the browser</td><td>Done</td></tr>
+  </table>
+
+  <p class="figs-heading">Figures</p>
+
+  <div class="fig-row">
+    <div class="fig-box">
+      <img src="assets/images/w3_fig1.png" class="fig-img" alt="JS validation on login form">
+      <p class="fig-caption"><strong>Figure 1:</strong> Login form displaying JavaScript validation error messages when submitted with empty email and password fields &mdash; no page reload occurs.</p>
+    </div>
+    <div class="fig-box">
+      <img src="assets/images/w3_fig2.png" class="fig-img" alt="Password strength indicator">
+      <p class="fig-caption"><strong>Figure 2:</strong> Registration page showing the live password strength indicator cycling through Weak, Medium, and Strong states as the user types.</p>
+    </div>
+  </div>
+
+  <div class="fig-row">
+    <div class="fig-box">
+      <img src="assets/images/w3_fig3.png" class="fig-img" alt="PHP syntax practice">
+      <p class="fig-caption"><strong>Figure 3:</strong> Browser output of a PHP practice script demonstrating a variable, a conditional block, a <code>for</code> loop, and a user-defined function with a return value.</p>
+    </div>
+    <div class="fig-box">
+      <img src="assets/images/w3_fig4.png" class="fig-img" alt="db.php in editor">
+      <p class="fig-caption"><strong>Figure 4:</strong> The completed <code>db.php</code> file showing the <code>mysqli_connect()</code> call, database credentials, and the connection-check conditional block.</p>
+    </div>
+  </div>
+
+  <div class="fig-row single">
+    <div class="fig-box">
+      <img src="assets/images/w3_fig5.png" class="fig-img" alt="Products page with live data">
+      <p class="fig-caption"><strong>Figure 5:</strong> Browser displaying the QuickCart products page with product cards rendered dynamically &mdash; names, prices, and images fetched live from the <code>products</code> table in <code>quickcart_db</code>.</p>
+    </div>
+  </div>
+
+  <p class="reflect-heading">Reflection</p>
+  <p class="reflect-text">
+    JavaScript form validation went fairly well until I started building the password strength checker. The regex took several revisions — it kept being either too permissive or flagging passwords that should have been acceptable. Once I split the check into separate conditions for length, digits, and special characters, it became easier to control. PHP felt different from JavaScript even though the syntax looks similar at a glance; the server-side execution model took some adjusting to think about. The most satisfying moment this week was getting <code>mysqli_query()</code> to retrieve records from the <code>products</code> table and rendering them as cards on the page — that connection between the database and what appears in the browser made the whole architecture make sense.
+  </p>
+</div>
+
+
+<!-- ═══════════════════ WEEK 4 ═══════════════════ -->
+<div class="page">
+  <div class="week-banner">Week 4 &mdash; Server-side Development with PHP</div>
+
+  <table class="meta-table">
+    <tr><th>Week</th><th>Course Topic</th><th>Date of Activities</th></tr>
+    <tr><td>4</td><td>Server-side Components &mdash; PHP Login System and Session Management</td><td>26th May 2026</td></tr>
+  </table>
+
+  <table class="tasks-table">
+    <tr><th>#</th><th>Task Performed</th><th>Description</th><th>Status</th></tr>
+    <tr><td>1</td><td>Login Form Processing</td><td>Wrote <code>login.php</code> to receive <code>$_POST</code> data, query the <code>users</code> table by email, and verify the submitted password against the stored hash</td><td>Done</td></tr>
+    <tr><td>2</td><td>Session Management</td><td>Called <code>session_start()</code> at the top of each page and stored <code>$_SESSION['user_id']</code> and <code>$_SESSION['username']</code> after a successful login</td><td>Done</td></tr>
+    <tr><td>3</td><td>Password Hashing</td><td>Updated the registration script to store passwords with <code>password_hash(PASSWORD_DEFAULT)</code>; updated the login check to use <code>password_verify()</code></td><td>Done</td></tr>
+    <tr><td>4</td><td>Session Guards</td><td>Added an authentication check at the top of <code>header.php</code> &mdash; pages that require login redirect to <code>login.php</code> if <code>$_SESSION['user_id']</code> is not set</td><td>Done</td></tr>
+    <tr><td>5</td><td>Admin Access Control</td><td>Built <code>admin/products.php</code> for adding and listing products; access is restricted to users whose <code>role</code> column equals <em>admin</em></td><td>Done</td></tr>
+  </table>
+
+  <p class="figs-heading">Figures</p>
+
+  <div class="fig-row">
+    <div class="fig-box">
+      <img src="assets/images/w4_fig1.png" class="fig-img" alt="login.php in editor">
+      <p class="fig-caption"><strong>Figure 1:</strong> <code>login.php</code> open in the editor showing the <code>$_POST</code> form handler, the <code>mysqli_query()</code> user lookup, and the <code>password_verify()</code> credential check.</p>
+    </div>
+    <div class="fig-box">
+      <img src="assets/images/w4_fig2.png" class="fig-img" alt="Login page in browser">
+      <p class="fig-caption"><strong>Figure 2:</strong> QuickCart login page displayed in the browser with the email and password input fields and a Bootstrap-styled submit button.</p>
+    </div>
+  </div>
+
+  <div class="fig-row">
+    <div class="fig-box">
+      <img src="assets/images/w4_fig3.png" class="fig-img" alt="Logged-in homepage">
+      <p class="fig-caption"><strong>Figure 3:</strong> Homepage after a successful login &mdash; the navigation bar displays the logged-in username and a Logout link, confirming the session is active.</p>
+    </div>
+    <div class="fig-box">
+      <img src="assets/images/w4_fig4.png" class="fig-img" alt="Session guard in header.php">
+      <p class="fig-caption"><strong>Figure 4:</strong> The session guard block in <code>header.php</code> &mdash; PHP code that checks <code>isset($_SESSION['user_id'])</code> and redirects unauthenticated users to <code>login.php</code>.</p>
+    </div>
+  </div>
+
+  <div class="fig-row single">
+    <div class="fig-box">
+      <img src="assets/images/w4_fig5.png" class="fig-img" alt="Admin products page">
+      <p class="fig-caption"><strong>Figure 5:</strong> Browser showing <code>admin/products.php</code> &mdash; the product management interface accessible only after logging in with an account that has the <em>admin</em> role.</p>
+    </div>
+  </div>
+
+  <p class="reflect-heading">Reflection</p>
+  <p class="reflect-text">
+    Building the login system was more involved than the earlier weeks. The most frustrating problem was with sessions not persisting — after logging in, users were being sent straight back to the login page on every subsequent request. After spending time with the problem I realized I had not placed <code>session_start()</code> at the very top of each protected page, meaning the session variables were simply not available when the guard check ran. Once that was in place the redirects worked as expected. I also chose to use <code>password_hash()</code> and <code>password_verify()</code> rather than storing passwords as plain text, which added a small amount of work to both the registration and login scripts but felt like the correct approach.
+  </p>
+</div>
+
+
+<!-- ═══════════════════ WEEK 5 ═══════════════════ -->
+<div class="page">
+  <div class="week-banner">Week 5 &mdash; Database Design and SQL Integration</div>
+
+  <table class="meta-table">
+    <tr><th>Week</th><th>Course Topic</th><th>Date of Activities</th></tr>
+    <tr><td>5</td><td>Database Components &mdash; MySQL Schema Design and CRUD Operations</td><td>2nd June 2026</td></tr>
+  </table>
+
+  <table class="tasks-table">
+    <tr><th>#</th><th>Task Performed</th><th>Description</th><th>Status</th></tr>
+    <tr><td>1</td><td>Schema Design</td><td>Designed the full <code>quickcart_db</code> schema with six tables: <code>users</code>, <code>categories</code>, <code>products</code>, <code>cart</code>, <code>orders</code>, <code>order_items</code></td><td>Done</td></tr>
+    <tr><td>2</td><td>Create Tables in phpMyAdmin</td><td>Created all six tables using the phpMyAdmin SQL editor; defined primary keys, data types, NOT NULL constraints, and AUTO_INCREMENT on ID columns</td><td>Done</td></tr>
+    <tr><td>3</td><td>Insert Sample Data</td><td>Ran INSERT statements to populate the <code>categories</code> and <code>products</code> tables with test data for development</td><td>Done</td></tr>
+    <tr><td>4</td><td>SELECT with JOIN</td><td>Wrote a SELECT query joining the <code>products</code> and <code>categories</code> tables on <code>category_id</code> to retrieve product details alongside their category names</td><td>Done</td></tr>
+    <tr><td>5</td><td>Live Data in Browser</td><td>Updated <code>products.php</code> to use the JOIN query; verified products display with correct category labels pulled from the live database</td><td>Done</td></tr>
+  </table>
+
+  <p class="figs-heading">Figures</p>
+
+  <div class="fig-row">
+    <div class="fig-box">
+      <img src="assets/images/w5_fig1.png" class="fig-img" alt="phpMyAdmin quickcart_db tables">
+      <p class="fig-caption"><strong>Figure 1:</strong> phpMyAdmin showing the <code>quickcart_db</code> database with all six tables listed: users, categories, products, cart, orders, and order_items.</p>
+    </div>
+    <div class="fig-box">
+      <img src="assets/images/w5_fig2.png" class="fig-img" alt="products table structure">
+      <p class="fig-caption"><strong>Figure 2:</strong> phpMyAdmin table structure view for the <code>products</code> table showing column names, data types, and constraints including the foreign key on <code>category_id</code>.</p>
+    </div>
+  </div>
+
+  <div class="fig-row">
+    <div class="fig-box">
+      <img src="assets/images/w5_fig3.png" class="fig-img" alt="SQL query results">
+      <p class="fig-caption"><strong>Figure 3:</strong> phpMyAdmin SQL tab showing a SELECT query executed on the <code>products</code> table, with the results grid displaying product records.</p>
+    </div>
+    <div class="fig-box">
+      <img src="assets/images/w5_fig4.png" class="fig-img" alt="JOIN query result">
+      <p class="fig-caption"><strong>Figure 4:</strong> phpMyAdmin showing the result of a SELECT query that JOINs the <code>products</code> and <code>categories</code> tables, displaying product names alongside their matching category names.</p>
+    </div>
+  </div>
+
+  <div class="fig-row single">
+    <div class="fig-box">
+      <img src="assets/images/w5_fig5.png" class="fig-img" alt="Products page with live data">
+      <p class="fig-caption"><strong>Figure 5:</strong> Browser showing the QuickCart product listing page with names, prices, category labels, and images retrieved live from <code>quickcart_db</code> using the JOIN query.</p>
+    </div>
+  </div>
+
+  <p class="reflect-heading">Reflection</p>
+  <p class="reflect-text">
+    Designing the database schema required the most thought of any week so far. Rather than storing the category name as a text column in every product row, I created a separate <code>categories</code> table and linked it to <code>products</code> using a foreign key on <code>category_id</code>. This caused a problem early on because phpMyAdmin threw an error when I tried to insert products before the corresponding categories existed &mdash; once I understood that foreign key constraints enforce the insertion order, it made complete sense. Writing the JOIN query to combine both tables was unfamiliar at first and took a couple of attempts to get the syntax correct. When the products page finally loaded with proper category names displayed under each item, the whole project started to feel like a real working website.
+  </p>
+</div>
+
+</body>
+</html>

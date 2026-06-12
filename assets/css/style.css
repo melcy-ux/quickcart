@@ -1,0 +1,73 @@
+/* QuickCart custom styles */
+
+body {
+  background-color: #f8f9fa;
+}
+
+/* Product cards */
+.product-card {
+  transition: transform 0.2s, box-shadow 0.2s;
+  height: 100%;
+}
+
+.product-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12);
+}
+
+.product-card .card-img-top {
+  height: 200px;
+  object-fit: cover;
+}
+
+.product-card .price {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #0d6efd;
+}
+
+/* Hero section */
+.hero-section {
+  background: linear-gradient(135deg, #0d6efd 0%, #0a58ca 100%);
+  color: #fff;
+  padding: 72px 0;
+  margin-bottom: 40px;
+}
+
+.hero-section h1 {
+  font-size: 2.5rem;
+  font-weight: 800;
+}
+
+/* Auth forms */
+.auth-card {
+  max-width: 430px;
+  margin: 60px auto;
+}
+
+/* Cart table */
+.cart-table img {
+  width: 70px;
+  height: 70px;
+  object-fit: cover;
+  border-radius: 6px;
+}
+
+/* Admin */
+.admin-stat-card {
+  border-left: 4px solid #0d6efd;
+}
+
+/* Password strength bar */
+#strength-bar {
+  height: 6px;
+  border-radius: 3px;
+  transition: width 0.3s, background-color 0.3s;
+}
+
+/* Alerts / inline validation messages */
+.field-error {
+  color: #dc3545;
+  font-size: 0.85rem;
+  margin-top: 4px;
+}
